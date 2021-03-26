@@ -1,6 +1,6 @@
 #![doc = "# Resources and Methods\n    * [projects](resources/projects/struct.ProjectsActions.html)\n      * [locations](resources/projects/locations/struct.LocationsActions.html)\n        * [*get*](resources/projects/locations/struct.GetRequestBuilder.html), [*list*](resources/projects/locations/struct.ListRequestBuilder.html)\n      * [secrets](resources/projects/secrets/struct.SecretsActions.html)\n        * [*addVersion*](resources/projects/secrets/struct.AddVersionRequestBuilder.html), [*create*](resources/projects/secrets/struct.CreateRequestBuilder.html), [*delete*](resources/projects/secrets/struct.DeleteRequestBuilder.html), [*get*](resources/projects/secrets/struct.GetRequestBuilder.html), [*getIamPolicy*](resources/projects/secrets/struct.GetIamPolicyRequestBuilder.html), [*list*](resources/projects/secrets/struct.ListRequestBuilder.html), [*patch*](resources/projects/secrets/struct.PatchRequestBuilder.html), [*setIamPolicy*](resources/projects/secrets/struct.SetIamPolicyRequestBuilder.html), [*testIamPermissions*](resources/projects/secrets/struct.TestIamPermissionsRequestBuilder.html)\n        * [versions](resources/projects/secrets/versions/struct.VersionsActions.html)\n          * [*access*](resources/projects/secrets/versions/struct.AccessRequestBuilder.html), [*destroy*](resources/projects/secrets/versions/struct.DestroyRequestBuilder.html), [*disable*](resources/projects/secrets/versions/struct.DisableRequestBuilder.html), [*enable*](resources/projects/secrets/versions/struct.EnableRequestBuilder.html), [*get*](resources/projects/secrets/versions/struct.GetRequestBuilder.html), [*list*](resources/projects/secrets/versions/struct.ListRequestBuilder.html)\n"]
 pub mod scopes {
-    #[doc = "View and manage your data across Google Cloud Platform services\n\n`https://www.googleapis.com/auth/cloud-platform`"]
+    #[doc = "See, edit, configure, and delete your Google Cloud Platform data\n\n`https://www.googleapis.com/auth/cloud-platform`"]
     pub const CLOUD_PLATFORM: &str = "https://www.googleapis.com/auth/cloud-platform";
 }
 pub mod schemas {
@@ -933,6 +933,44 @@ pub mod schemas {
         :: serde :: Deserialize,
         :: serde :: Serialize,
     )]
+    pub struct Rotation {
+        #[doc = "Optional. Timestamp in UTC at which the Secret is scheduled to rotate. next_rotation_time MUST be set if rotation_period is set."]
+        #[serde(
+            rename = "nextRotationTime",
+            default,
+            skip_serializing_if = "std::option::Option::is_none"
+        )]
+        pub next_rotation_time: ::std::option::Option<String>,
+        #[doc = "Input only. The Duration between rotation notifications. Must be in seconds and at least 3600s (1h) and at most 3153600000s (100 years). If rotation_period is set, next_rotation_time must be set. next_rotation_time will be advanced by this period when the service automatically sends rotation notifications."]
+        #[serde(
+            rename = "rotationPeriod",
+            default,
+            skip_serializing_if = "std::option::Option::is_none"
+        )]
+        pub rotation_period: ::std::option::Option<String>,
+    }
+    impl ::google_field_selector::FieldSelector for Rotation {
+        fn fields() -> Vec<::google_field_selector::Field> {
+            Vec::new()
+        }
+    }
+    impl ::google_field_selector::ToFieldType for Rotation {
+        fn field_type() -> ::google_field_selector::FieldType {
+            ::google_field_selector::FieldType::Leaf
+        }
+    }
+    #[derive(
+        Debug,
+        Clone,
+        PartialEq,
+        Hash,
+        PartialOrd,
+        Ord,
+        Eq,
+        Default,
+        :: serde :: Deserialize,
+        :: serde :: Serialize,
+    )]
     pub struct Secret {
         #[doc = "Output only. The time at which the Secret was created."]
         #[serde(
@@ -941,6 +979,13 @@ pub mod schemas {
             skip_serializing_if = "std::option::Option::is_none"
         )]
         pub create_time: ::std::option::Option<String>,
+        #[doc = "Optional. Timestamp in UTC when the Secret is scheduled to expire. This is always provided on output, regardless of what was sent on input."]
+        #[serde(
+            rename = "expireTime",
+            default,
+            skip_serializing_if = "std::option::Option::is_none"
+        )]
+        pub expire_time: ::std::option::Option<String>,
         #[doc = "The labels assigned to this Secret. Label keys must be between 1 and 63 characters long, have a UTF-8 encoding of maximum 128 bytes, and must conform to the following PCRE regular expression: `\\p{Ll}\\p{Lo}{0,62}` Label values must be between 0 and 63 characters long, have a UTF-8 encoding of maximum 128 bytes, and must conform to the following PCRE regular expression: `[\\p{Ll}\\p{Lo}\\p{N}_-]{0,63}` No more than 64 labels can be assigned to a given resource."]
         #[serde(
             rename = "labels",
@@ -962,6 +1007,27 @@ pub mod schemas {
             skip_serializing_if = "std::option::Option::is_none"
         )]
         pub replication: ::std::option::Option<crate::schemas::Replication>,
+        #[doc = "Optional. Rotation policy attached to the Secret. May be excluded if there is no rotation policy."]
+        #[serde(
+            rename = "rotation",
+            default,
+            skip_serializing_if = "std::option::Option::is_none"
+        )]
+        pub rotation: ::std::option::Option<crate::schemas::Rotation>,
+        #[doc = "Optional. A list of up to 10 Pub/Sub topics to which messages are published when control plane operations are called on the secret or its versions."]
+        #[serde(
+            rename = "topics",
+            default,
+            skip_serializing_if = "std::option::Option::is_none"
+        )]
+        pub topics: ::std::option::Option<Vec<crate::schemas::Topic>>,
+        #[doc = "Input only. The TTL for the Secret."]
+        #[serde(
+            rename = "ttl",
+            default,
+            skip_serializing_if = "std::option::Option::is_none"
+        )]
+        pub ttl: ::std::option::Option<String>,
     }
     impl ::google_field_selector::FieldSelector for Secret {
         fn fields() -> Vec<::google_field_selector::Field> {
@@ -1240,6 +1306,37 @@ pub mod schemas {
         }
     }
     impl ::google_field_selector::ToFieldType for TestIamPermissionsResponse {
+        fn field_type() -> ::google_field_selector::FieldType {
+            ::google_field_selector::FieldType::Leaf
+        }
+    }
+    #[derive(
+        Debug,
+        Clone,
+        PartialEq,
+        Hash,
+        PartialOrd,
+        Ord,
+        Eq,
+        Default,
+        :: serde :: Deserialize,
+        :: serde :: Serialize,
+    )]
+    pub struct Topic {
+        #[doc = "Required. The resource name of the Pub/Sub topic that will be published to, in the following format: `projects/*/topics/*`. For publication to succeed, the Secret Manager P4SA must have `pubsub.publisher` permissions on the topic."]
+        #[serde(
+            rename = "name",
+            default,
+            skip_serializing_if = "std::option::Option::is_none"
+        )]
+        pub name: ::std::option::Option<String>,
+    }
+    impl ::google_field_selector::FieldSelector for Topic {
+        fn fields() -> Vec<::google_field_selector::Field> {
+            Vec::new()
+        }
+    }
+    impl ::google_field_selector::ToFieldType for Topic {
         fn field_type() -> ::google_field_selector::FieldType {
             ::google_field_selector::FieldType::Leaf
         }
@@ -1747,17 +1844,17 @@ pub mod resources {
                 xgafv: Option<crate::params::Xgafv>,
             }
             impl<'a> ListRequestBuilder<'a> {
-                #[doc = "The standard list filter."]
+                #[doc = "A filter to narrow down results to a preferred subset. The filtering language accepts strings like \"displayName=tokyo\", and is documented in more detail in [AIP-160](https://google.aip.dev/160)."]
                 pub fn filter(mut self, value: impl Into<String>) -> Self {
                     self.filter = Some(value.into());
                     self
                 }
-                #[doc = "The standard list page size."]
+                #[doc = "The maximum number of results to return. If not set, the service will select a default."]
                 pub fn page_size(mut self, value: i32) -> Self {
                     self.page_size = Some(value);
                     self
                 }
-                #[doc = "The standard list page token."]
+                #[doc = "A page token received from the `next_page_token` field in the response. Send that page token to receive the subsequent page."]
                 pub fn page_token(mut self, value: impl Into<String>) -> Self {
                     self.page_token = Some(value.into());
                     self
